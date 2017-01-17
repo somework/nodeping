@@ -1,0 +1,24 @@
+{
+  "name": "adv/nodeping",
+  "description": "Nodeping api",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Igor Pinchuk",
+      "email": "i.pinchuk.work@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Adv\\": "src/"
+    }
+  },
+  "require": {
+    "roave/security-advisories": "dev-master",
+    "guzzlehttp/guzzle": "~6.0",
+    "symfony/validator": "^3.2",
+    "symfony/yaml": "^3.2",
+    "symfony/expression-language": "^3.2"
+  }
+}

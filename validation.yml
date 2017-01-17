@@ -1,0 +1,155 @@
+Adv\Checks\CheckValidator:
+  properties:
+    id:
+      - Type:
+          type: string
+    type:
+      - Choice:
+          callback: Adv\Checks\CheckType::getTypes
+      - NotNull: ~
+    target:
+      - Type:
+          type: string
+    label:
+      - Type:
+          type: string
+    interval:
+      - Type:
+          type: int
+      - Range:
+          min: 1
+    enabled:
+      - Type:
+          type: string
+      - Choice:
+          choices: ['true', 'false', 'active']
+    public:
+      - Type:
+          type: string
+      - Choice:
+          choices: ['true', 'false']
+    runLocations:
+      - Type:
+          type: array
+      - Choice:
+          choices: ['nam', 'eur', 'eao', 'wlw']
+          multiple: true
+    threshold:
+      - Type:
+          type: int
+      - Range:
+          min: 1
+    sens:
+      - Type:
+          type: int
+      - Range:
+          min: 1
+    notifications:
+      - Type:
+          type: array
+    dep:
+      - Type:
+          type: string
+    contentString:
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Checks\\CheckType::DNS"),
+              constant("Adv\\Checks\\CheckType::HTTPCONTENT"),
+              constant("Adv\\Checks\\CheckType::HTTPADV"),
+              constant("Adv\\Checks\\CheckType::FTP"),
+              constant("Adv\\Checks\\CheckType::SSH"),
+              constant("Adv\\Checks\\CheckType::WEBSOCKET"),
+            ]'
+      - Type:
+          type: string
+    customerId:
+      - Type:
+          type: string
+    dnsType:
+      - Type:
+          type: string
+      - Expression:
+          expression: '!value or this.getType() in [constant("Adv\\Checks\\CheckType::DNS")]'
+    dnsToResolve:
+      - Type:
+          type: string
+      - Expression:
+          expression: '!value or this.getType() in [constant("Adv\\Checks\\CheckType::DNS")]'
+    follow:
+      - Type:
+          type: boolean
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Checks\\CheckType::HTTP"),
+              constant("Adv\\Checks\\CheckType::HTTPCONTENT"),
+              constant("Adv\\Checks\\CheckType::HTTPADV"),
+            ]'
+    email:
+      - Type:
+          type: string
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Checks\\CheckType::IMAP"),
+              constant("Adv\\Checks\\CheckType::SMTP"),
+            ]'
+    port:
+      - Type:
+          type: integer
+      - Expression:
+          expression: '(value and this.getType() in [
+              constant("Adv\\Checks\\CheckType::PORT"),
+              constant("Adv\\Checks\\CheckType::NTP"),
+            ]) or (!value or this.getType() in [
+              constant("Adv\\Checks\\CheckType::DNS"),
+              constant("Adv\\Checks\\CheckType::FTP"),
+              constant("Adv\\Checks\\CheckType::SSH"),
+            ])'
+    username:
+      - Type:
+          type: string
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Checks\\CheckType::FTP"),
+              constant("Adv\\Checks\\CheckType::IMAP4"),
+              constant("Adv\\Checks\\CheckType::POP3"),
+              constant("Adv\\Checks\\CheckType::SMTP"),
+              constant("Adv\\Checks\\CheckType::SSH"),
+            ]'
+    password:
+      - Type:
+          type: string
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Checks\\CheckType::FTP"),
+              constant("Adv\\Checks\\CheckType::IMAP4"),
+              constant("Adv\\Checks\\CheckType::POP3"),
+              constant("Adv\\Checks\\CheckType::SMTP"),
+              constant("Adv\\Checks\\CheckType::SSH"),
+            ]'
+    secure:
+      - Type:
+          type: string
+      - Expression:
+          expression: '!value or (this.getType() in [
+              constant("Adv\\Checks\\CheckType::IMAP4"),
+              constant("Adv\\Checks\\CheckType::SMTP"),
+              constant("Adv\\Checks\\CheckType::POP3"),
+            ] and value in ["false", "ssl"])'
+    ignore:
+      - Type:
+          type: string
+    invert:
+      - Type:
+          type: string
+      - Choice:
+          choices: ['true', 'false']
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Checks\\CheckType::FTP"),
+              constant("Adv\\Checks\\CheckType::HTTPCONTENT"),
+              constant("Adv\\Checks\\CheckType::HTTPADV"),
+              constant("Adv\\Checks\\CheckType::NTP"),
+              constant("Adv\\Checks\\CheckType::PORT"),
+              constant("Adv\\Checks\\CheckType::SSH"),
+            ]'
+      -
