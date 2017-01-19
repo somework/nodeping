@@ -1,10 +1,8 @@
 <?php
 
 
-namespace Adv\Type;
+namespace Adv\Nodeping\Checks\Fields;
 
-
-use Adv\Exception\InvalidArgumentTypeException;
 
 class Notification
 {
@@ -43,13 +41,9 @@ class Notification
      * @param string $contactId
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setContactId($contactId)
     {
-        if (!is_string($contactId)) {
-            throw new InvalidArgumentTypeException('contactid', gettype($contactId));
-        }
         $this->contactId = $contactId;
         return $this;
     }
@@ -66,19 +60,15 @@ class Notification
      * @param string $schedule
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setSchedule($schedule)
     {
-        if (!is_string($schedule)) {
-            throw new InvalidArgumentTypeException('schedule', gettype($schedule));
-        }
         $this->schedule = $schedule;
         return $this;
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getDelay()
     {
@@ -86,16 +76,12 @@ class Notification
     }
 
     /**
-     * @param string $delay
+     * @param int $delay
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setDelay($delay)
     {
-        if (!is_string($delay)) {
-            throw new InvalidArgumentTypeException('delay', gettype($delay));
-        }
         $this->delay = $delay;
         return $this;
     }

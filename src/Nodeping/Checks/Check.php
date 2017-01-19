@@ -1,38 +1,36 @@
 <?php
 
 
-namespace Adv\Checks;
+namespace Adv\Nodeping\Checks;
 
 
-use Adv\Exception\InvalidArgumentTypeException;
-use Adv\Type\Method;
-use Adv\Type\Notification;
-use Adv\Type\RunLocation;
+use Adv\Nodeping\Checks\Fields\Field;
+use Adv\Nodeping\Checks\Fields\Notification;
 
-class CheckValidator
+class Check
 {
     /**
-     * @var string|null
+     * @var string
      */
     protected $id;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $customerId;
 
     /**
-     * @var CheckType
+     * @var string
      */
     protected $type;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $target;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $label;
 
@@ -52,7 +50,7 @@ class CheckValidator
     protected $public;
 
     /**
-     * @var RunLocation[]
+     * @var array
      */
     protected $runLocations = [];
 
@@ -72,62 +70,62 @@ class CheckValidator
     protected $notifications;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $dep;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $contentString;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $dnsType;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $dnsToResolve;
 
     /**
-     * @var bool|null
+     * @var bool
      */
     protected $follow;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $email;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $port;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $username;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $password;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $secure;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $verify;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $ignore;
 
@@ -140,16 +138,40 @@ class CheckValidator
      * @var int
      */
     protected $warningDays;
+
+    /**
+     * @var Field[]
+     */
     protected $fields;
+
+    /**
+     * @var string
+     */
     protected $postData;
-    protected $data;
-    protected $receiveHeaders;
+
+    /**
+     * @var array
+     */
+    protected $data = [];
+
+    /**
+     * @var array
+     */
+    protected $receiveHeaders = [];
+
+    /**
+     * @var array
+     */
     protected $sendHeaders;
 
     /**
-     * @var Method|null
+     * @var string
      */
     protected $method;
+
+    /**
+     * @var int
+     */
     protected $statusCode;
 
     public function __construct($type)
@@ -158,7 +180,7 @@ class CheckValidator
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getId()
     {
@@ -166,10 +188,9 @@ class CheckValidator
     }
 
     /**
-     * @param string|null $id
+     * @param string $id
      *
      * @return static
-     * @throws \InvalidArgumentException
      */
     public function setId($id)
     {
@@ -178,7 +199,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getCustomerId()
     {
@@ -186,10 +207,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|string $customerId
+     * @param string $customerId
      *
      * @return static
-     * @throws InvalidArgumentTypeException
      */
     public function setCustomerId($customerId)
     {
@@ -198,7 +218,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getTarget()
     {
@@ -206,10 +226,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|string $target
+     * @param string $target
      *
      * @return static
-     * @throws InvalidArgumentTypeException
      */
     public function setTarget($target)
     {
@@ -218,7 +237,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getLabel()
     {
@@ -226,10 +245,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|string $label
+     * @param string $label
      *
      * @return static
-     * @throws InvalidArgumentTypeException
      */
     public function setLabel($label)
     {
@@ -241,8 +259,6 @@ class CheckValidator
      * @param int $interval
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentMinValueException
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setInterval($interval)
     {
@@ -262,7 +278,6 @@ class CheckValidator
      * @param string $enabled
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setEnabled($enabled = 'true')
     {
@@ -282,36 +297,10 @@ class CheckValidator
      * @param string $public
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setPublic($public = 'true')
     {
         $this->public = $public;
-        return $this;
-    }
-
-    /**
-     * @param RunLocation[] $runLocations
-     *
-     * @return static
-     */
-    public function setRunLocations(array $runLocations)
-    {
-        $this->runLocations = [];
-        foreach ($runLocations as $location) {
-            $this->addRunLocation($location);
-        }
-        return $this;
-    }
-
-    /**
-     * @param RunLocation $runLocation
-     *
-     * @return static
-     */
-    public function addRunLocation(RunLocation $runLocation)
-    {
-        $this->runLocations[$runLocation->getCode()] = $runLocation;
         return $this;
     }
 
@@ -327,8 +316,6 @@ class CheckValidator
      * @param int $threshold
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentMinValueException
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setThreshold($threshold)
     {
@@ -348,8 +335,6 @@ class CheckValidator
      * @param int $sens
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentMinValueException
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setSens($sens)
     {
@@ -358,7 +343,7 @@ class CheckValidator
     }
 
     /**
-     * @return \Adv\Type\Notification[]
+     * @return \Adv\Nodeping\Checks\Fields\Notification[]
      */
     public function getNotifications()
     {
@@ -366,7 +351,7 @@ class CheckValidator
     }
 
     /**
-     * @param \Adv\Type\Notification[] $notifications
+     * @param \Adv\Nodeping\Checks\Fields\Notification[] $notifications
      *
      * @return static
      */
@@ -380,7 +365,7 @@ class CheckValidator
     }
 
     /**
-     * @param \Adv\Type\Notification $notification
+     * @param \Adv\Nodeping\Checks\Fields\Notification $notification
      *
      * @return static
      */
@@ -391,7 +376,7 @@ class CheckValidator
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getDep()
     {
@@ -399,10 +384,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|string $dep
+     * @param string $dep
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setDep($dep)
     {
@@ -422,7 +406,6 @@ class CheckValidator
      * @param string $contentString
      *
      * @return static
-     * @throws \InvalidArgumentException
      */
     public function setContentString($contentString)
     {
@@ -461,7 +444,6 @@ class CheckValidator
      * @param string $dnsType
      *
      * @return static
-     * @throws \Adv\Exception\InvalidTypeException
      */
     public function setDnsType($dnsType)
     {
@@ -470,7 +452,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getDnsToResolve()
     {
@@ -481,8 +463,6 @@ class CheckValidator
      * @param string $dnsToResolve
      *
      * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
-     * @throws \Adv\Exception\InvalidTypeException
      */
     public function setDnsToResolve($dnsToResolve)
     {
@@ -491,7 +471,7 @@ class CheckValidator
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
     public function getFollow()
     {
@@ -499,11 +479,9 @@ class CheckValidator
     }
 
     /**
-     * @param bool|null $follow
+     * @param bool $follow
      *
      * @return static
-     * @throws \InvalidArgumentException
-     * @throws \Adv\Exception\InvalidTypeException
      */
     public function setFollow($follow)
     {
@@ -512,7 +490,7 @@ class CheckValidator
     }
 
     /**
-     * @return \Adv\Type\Method|null
+     * @return string
      */
     public function getMethod()
     {
@@ -520,19 +498,18 @@ class CheckValidator
     }
 
     /**
-     * @param \Adv\Type\Method|null $method
+     * @param string $method
      *
      * @return static
-     * @throws \InvalidArgumentException
      */
-    public function setMethod(Method $method = null)
+    public function setMethod($method)
     {
         $this->method = $method;
         return $this;
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getEmail()
     {
@@ -540,11 +517,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|string $email
+     * @param string $email
      *
      * @return static
-     * @throws \Adv\Exception\InvalidTypeException
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setEmail($email)
     {
@@ -553,7 +528,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getPort()
     {
@@ -561,12 +536,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|int $port
+     * @param int $port
      *
      * @return static
-     * @throws \Adv\Exception\InvalidTypeException
-     * @throws \InvalidArgumentException
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setPort($port)
     {
@@ -575,7 +547,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getUsername()
     {
@@ -583,10 +555,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|string $username
+     * @param string $username
      *
      * @return static
-     * @throws \Adv\Exception\InvalidTypeException
      */
     public function setUsername($username)
     {
@@ -595,7 +566,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getPassword()
     {
@@ -603,10 +574,9 @@ class CheckValidator
     }
 
     /**
-     * @param null|string $password
+     * @param string $password
      *
      * @return static
-     * @throws \Adv\Exception\InvalidTypeException
      */
     public function setPassword($password)
     {
@@ -615,7 +585,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getSecure()
     {
@@ -623,11 +593,9 @@ class CheckValidator
     }
 
     /**
-     * @param string|null $secure
+     * @param string $secure
      *
      * @return static
-     * @throws \Adv\Exception\InvalidTypeException
-     * @throws \Adv\Exception\InvalidArgumentTypeException
      */
     public function setSecure($secure = 'ssl')
     {
@@ -636,9 +604,9 @@ class CheckValidator
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isVerify()
+    public function getVerify()
     {
         return $this->verify;
     }
@@ -646,8 +614,7 @@ class CheckValidator
     /**
      * @param bool $verify
      *
-     * @return static
-     * @throws \Adv\Exception\InvalidArgumentTypeException
+     * @return string
      */
     public function setVerify($verify = true)
     {
@@ -656,7 +623,7 @@ class CheckValidator
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getIgnore()
     {
@@ -709,6 +676,188 @@ class CheckValidator
     public function setWarningDays($warningDays)
     {
         $this->warningDays = $warningDays;
+        return $this;
+    }
+
+    /**
+     * @param \Adv\Nodeping\Checks\Fields\Field $field
+     *
+     * @return static
+     */
+    public function addField(Field $field)
+    {
+        $this->fields[spl_object_hash($field)] = $field;
+        return $this;
+    }
+
+    /**
+     * @return \Adv\Nodeping\Checks\Fields\Field[]
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @param \Adv\Nodeping\Checks\Fields\Field[] $fields
+     *
+     * @return static
+     */
+    public function setFields(array $fields)
+    {
+        $this->fields = $fields;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return $this->statusCode;
+    }
+
+    /**
+     * @param int $statusCode
+     *
+     * @return static
+     */
+    public function setStatusCode($statusCode)
+    {
+        $this->statusCode = $statusCode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostData()
+    {
+        return $this->postData;
+    }
+
+    /**
+     * @param string $postData
+     *
+     * @return static
+     */
+    public function setPostData($postData)
+    {
+        $this->postData = $postData;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return static
+     */
+    public function setData(array $data)
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReceiveHeaders()
+    {
+        return $this->receiveHeaders;
+    }
+
+    /**
+     * @param array $receiveHeaders
+     *
+     * @return static
+     */
+    public function setReceiveHeaders(array $receiveHeaders)
+    {
+        $this->receiveHeaders = $receiveHeaders;
+        return $this;
+    }
+
+    /**
+     * @param int|string $key
+     * @param mixed      $value
+     *
+     * @return static
+     */
+    public function addReceiveHeader($key, $value)
+    {
+        $this->receiveHeaders[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSendHeaders()
+    {
+        return $this->sendHeaders;
+    }
+
+    /**
+     * @param array $sendHeaders
+     *
+     * @return static
+     */
+    public function setSendHeaders(array $sendHeaders)
+    {
+        $this->sendHeaders = $sendHeaders;
+        return $this;
+    }
+
+    /**
+     * @param int|string $key
+     * @param mixed      $value
+     *
+     * @return static
+     */
+    public function addSendHeader($key, $value)
+    {
+        $this->sendHeaders[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRunLocations()
+    {
+        return $this->runLocations;
+    }
+
+    /**
+     * @param array $runLocations
+     *
+     * @return static
+     */
+    public function setRunLocations(array $runLocations)
+    {
+        $this->runLocations = [];
+        foreach ($runLocations as $location) {
+            $this->addRunLocation($location);
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $runLocation
+     *
+     * @return static
+     */
+    public function addRunLocation($runLocation)
+    {
+        $this->runLocations[$runLocation] = $runLocation;
         return $this;
     }
 

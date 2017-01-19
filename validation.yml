@@ -1,15 +1,25 @@
-Adv\Checks\CheckValidator:
+Adv\Nodeping\Checks\Check:
   properties:
     id:
       - Type:
           type: string
+      - NotNull: { groups: [update] }
+    customerId:
+      - Type:
+          type: string
+      - NotNull: { groups: [create,update] }
     type:
       - Choice:
-          callback: Adv\Checks\CheckType::getTypes
+          callback: Adv\Nodeping\Checks\Fields\Type::get
       - NotNull: ~
     target:
       - Type:
           type: string
+      - Expression:
+          expression: 'value or this.getType() in [
+            constant("Adv\\Nodeping\\Checks\\Fields\\Type::DNS"),
+          ]'
+          groups: [create]
     label:
       - Type:
           type: string
@@ -32,7 +42,7 @@ Adv\Checks\CheckValidator:
       - Type:
           type: array
       - Choice:
-          choices: ['nam', 'eur', 'eao', 'wlw']
+          callback: Adv\Nodeping\Checks\Fields\RunLocations::get
           multiple: true
     threshold:
       - Type:
@@ -47,18 +57,19 @@ Adv\Checks\CheckValidator:
     notifications:
       - Type:
           type: array
+      - Valid: ~
     dep:
       - Type:
           type: string
     contentString:
       - Expression:
           expression: '!value or this.getType() in [
-              constant("Adv\\Checks\\CheckType::DNS"),
-              constant("Adv\\Checks\\CheckType::HTTPCONTENT"),
-              constant("Adv\\Checks\\CheckType::HTTPADV"),
-              constant("Adv\\Checks\\CheckType::FTP"),
-              constant("Adv\\Checks\\CheckType::SSH"),
-              constant("Adv\\Checks\\CheckType::WEBSOCKET"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::DNS"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPCONTENT"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::FTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SSH"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::WEBSOCKET"),
             ]'
       - Type:
           type: string
@@ -69,72 +80,79 @@ Adv\Checks\CheckValidator:
       - Type:
           type: string
       - Expression:
-          expression: '!value or this.getType() in [constant("Adv\\Checks\\CheckType::DNS")]'
+          expression: '!value or this.getType() in [constant("Adv\\Nodeping\\Checks\\Fields\\Type::DNS")]'
+      - Choice:
+          callback: Adv\Nodeping\Checks\Fields\DnsType::get
     dnsToResolve:
       - Type:
           type: string
       - Expression:
-          expression: '!value or this.getType() in [constant("Adv\\Checks\\CheckType::DNS")]'
+          expression: '!value or this.getType() in [constant("Adv\\Nodeping\\Checks\\Fields\\Type::DNS")]'
     follow:
       - Type:
           type: boolean
       - Expression:
           expression: '!value or this.getType() in [
-              constant("Adv\\Checks\\CheckType::HTTP"),
-              constant("Adv\\Checks\\CheckType::HTTPCONTENT"),
-              constant("Adv\\Checks\\CheckType::HTTPADV"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPCONTENT"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
             ]'
     email:
       - Type:
           type: string
       - Expression:
           expression: '!value or this.getType() in [
-              constant("Adv\\Checks\\CheckType::IMAP"),
-              constant("Adv\\Checks\\CheckType::SMTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::IMAP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SMTP"),
             ]'
     port:
       - Type:
           type: integer
       - Expression:
           expression: '(value and this.getType() in [
-              constant("Adv\\Checks\\CheckType::PORT"),
-              constant("Adv\\Checks\\CheckType::NTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::PORT"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::NTP"),
             ]) or (!value or this.getType() in [
-              constant("Adv\\Checks\\CheckType::DNS"),
-              constant("Adv\\Checks\\CheckType::FTP"),
-              constant("Adv\\Checks\\CheckType::SSH"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::DNS"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::FTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SSH"),
             ])'
     username:
       - Type:
           type: string
       - Expression:
           expression: '!value or this.getType() in [
-              constant("Adv\\Checks\\CheckType::FTP"),
-              constant("Adv\\Checks\\CheckType::IMAP4"),
-              constant("Adv\\Checks\\CheckType::POP3"),
-              constant("Adv\\Checks\\CheckType::SMTP"),
-              constant("Adv\\Checks\\CheckType::SSH"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::FTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::IMAP4"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::POP3"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SMTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SSH"),
             ]'
     password:
       - Type:
           type: string
       - Expression:
           expression: '!value or this.getType() in [
-              constant("Adv\\Checks\\CheckType::FTP"),
-              constant("Adv\\Checks\\CheckType::IMAP4"),
-              constant("Adv\\Checks\\CheckType::POP3"),
-              constant("Adv\\Checks\\CheckType::SMTP"),
-              constant("Adv\\Checks\\CheckType::SSH"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::FTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::IMAP4"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::POP3"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SMTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SSH"),
             ]'
     secure:
       - Type:
           type: string
       - Expression:
           expression: '!value or (this.getType() in [
-              constant("Adv\\Checks\\CheckType::IMAP4"),
-              constant("Adv\\Checks\\CheckType::SMTP"),
-              constant("Adv\\Checks\\CheckType::POP3"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::IMAP4"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SMTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::POP3"),
             ] and value in ["false", "ssl"])'
+    verify:
+      - Type:
+          type: string
+      - Choice:
+          choices: ['true', 'false']
     ignore:
       - Type:
           type: string
@@ -145,11 +163,93 @@ Adv\Checks\CheckValidator:
           choices: ['true', 'false']
       - Expression:
           expression: '!value or this.getType() in [
-              constant("Adv\\Checks\\CheckType::FTP"),
-              constant("Adv\\Checks\\CheckType::HTTPCONTENT"),
-              constant("Adv\\Checks\\CheckType::HTTPADV"),
-              constant("Adv\\Checks\\CheckType::NTP"),
-              constant("Adv\\Checks\\CheckType::PORT"),
-              constant("Adv\\Checks\\CheckType::SSH"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::FTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPCONTENT"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::NTP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::PORT"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SSH"),
             ]'
-      -
+    warningDays:
+      - Type:
+          type: integer
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SSL"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::POP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::IMAP"),
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::SMTP"),
+            ]'
+    fields:
+      - Valid: ~
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+            ]'
+    postData:
+      - Type:
+          type: string
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+            ]'
+    data:
+      - Type:
+          type: array
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+            ]'
+    receiveHeaders:
+      - Type:
+          type: array
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+            ]'
+    sendHeaders:
+      - Type:
+          type: array
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+            ]'
+    method:
+      - Type:
+          type: string
+      - Choice:
+          callback: Adv\Nodeping\Checks\Fields\Method::get
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+            ]'
+    statusCode:
+      - Type:
+          type: integer
+      - Expression:
+          expression: '!value or this.getType() in [
+              constant("Adv\\Nodeping\\Checks\\Fields\\Type::HTTPADV"),
+            ]'
+
+\Adv\Nodeping\Checks\Fields\Field:
+  properties:
+    name:
+      - NotNull: ~
+    min:
+      - NotNull: ~
+    max:
+      - NotNull: ~
+
+Adv\Nodeping\Checks\Fields\Notification:
+  properties:
+    contactId:
+      - NotNull: ~
+      - Type:
+          type: string
+    schedule:
+      - NotNull: ~
+      - Type:
+          type: string
+    delay:
+      - Type:
+          type: int
